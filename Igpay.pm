@@ -1,7 +1,6 @@
 package Lingua::Atinlay::Igpay;
 
 use strict;
-use warnings;
 
 require Exporter;
 
@@ -12,7 +11,7 @@ use vars qw[@ISA %EXPORT_TAGS @EXPORT_OK $VERSION];
 
 @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 sub enhay2igpayatinlay(@) {
   my @list = @_;
