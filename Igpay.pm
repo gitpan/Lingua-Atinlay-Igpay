@@ -11,28 +11,31 @@ use vars qw[@ISA %EXPORT_TAGS @EXPORT_OK $VERSION];
 
 @EXPORT_OK = ( @{ $EXPORT_TAGS{'all'} } );
 
-$VERSION = '0.02';
+$VERSION = '0.03';
 
-sub enhay2igpayatinlay(@) {
-  my @list = @_;
-  foreach ( @list ) {
-    my @tokens = split /\b/;
-    foreach ( @tokens ) {
-      my $alluc   = ( $_ eq uc $_          ? 1 : 0 );
-      my $firstuc = ( /^[A-Z]/ && ! $alluc ? 1 : 0 );
-      if (    s/^([aeiou].*)/${1}hay/gsi
-           || s/^([b-d,f-h,j-n,p-t,v-z]{2,})(.+)/${2}${1}ay/gsi
-           || s/^([b-d,f-h,j-n,p-t,v-z])(.+)/${2}${1}ay/gsi ) {
-                $_ = uc if $alluc;
+sub enhay2igpayatinlay {
+  my @list     = @_;
+  my @new_list = ();
+  while ( defined( $_ = shift @list ) ) {
+    my @tokens = split /\b/, $_;
+    foreach ( 0 .. $#tokens ) {
+      my $tok     = $tokens[$_];
+      my $alluc   = ( $tok eq uc $tok              ? 1 : 0 );
+      my $firstuc = ( $tok =~ /^[A-Z]/ && ! $alluc ? 1 : 0 );
+      if (    $tok =~ s/^([aeiou].*)/${1}hay/gsi
+           || $tok =~ s/^([b-d,f-h,j-n,p-t,v-z]{2,})(.+)/${2}${1}ay/gsi
+           || $tok =~ s/^([b-d,f-h,j-n,p-t,v-z])(.+)/${2}${1}ay/gsi ) {
+                $tok = uc $tok if $alluc;
                 if ( $firstuc ) {
-                  $_ = ucfirst;
-                  s/((?:.h|.)ay)$/lc $1/e;
+                  $tok =  ucfirst $tok;
+                  $tok =~ s/((?:.h|.)ay)$/lc $1/e;
                 }
       }
+      $tokens[$_] = $tok;
     }
-    $_ = join '', @tokens;
+    push @new_list, join '', @tokens;
   }
-  return @list;
+  return @new_list;
 }
 
 1;
